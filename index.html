@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#101b2d" />
+  <meta name="description" content="上传英文 PDF，划词查看词典释义，选中句段获取中文翻译。" />
+  <title>PaperLingo · 论文翻译阅读器</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23101b2d'/%3E%3Cpath d='M8 7h10a6 6 0 0 1 6 6v12H13a5 5 0 0 1-5-5V7Z' fill='%23f7f4ed'/%3E%3Cpath d='M13 12h7M13 16h7M13 20h4' stroke='%232f6feb' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand" aria-label="PaperLingo 首页">
+      <span class="brand-mark" aria-hidden="true">P</span>
+      <span>PaperLingo</span>
+    </div>
+    <div class="file-meta" id="fileMeta">
+      <span class="status-dot"></span>
+      <span id="fileName">示例论文 · Attention Is All You Need</span>
+    </div>
+    <div class="top-actions">
+      <button class="secondary-button" id="uploadBtn">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4"/></svg>
+        上传 PDF
+      </button>
+      <input type="file" id="fileInput" accept="application/pdf,.pdf" hidden />
+    </div>
+  </header>
+
+  <main class="workspace" id="workspace">
+    <section class="reader-pane" id="dropZone" aria-label="PDF 阅读区">
+      <div class="reader-toolbar">
+        <div class="tool-group">
+          <button class="tool-button hand-button" id="handBtn" aria-label="开启手掌拖动" title="手掌拖动">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 11V6.8a1.5 1.5 0 0 1 3 0V10m0-3.8a1.5 1.5 0 0 1 3 0V10m0-2.6a1.5 1.5 0 0 1 3 0v4m0-1.8a1.5 1.5 0 0 1 3 0v3.3c0 4.5-2.8 7.5-7.2 7.5h-.8c-2.5 0-4.2-1.2-5.5-3l-3.1-4.4a1.6 1.6 0 0 1 .3-2.2 1.7 1.7 0 0 1 2.3.2l2 2.4V11Z"/></svg>
+          </button>
+          <button class="tool-button" id="minusZoom" aria-label="缩小">−</button>
+          <span id="zoomLabel">100%</span>
+          <button class="tool-button" id="plusZoom" aria-label="放大">＋</button>
+        </div>
+        <div class="page-counter"><span id="pageNow">1</span> / <span id="pageTotal">3</span></div>
+        <div class="privacy-note">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.8 2.9 8.2 7 10 4.1-1.8 7-5.2 7-10V6l-7-3Z"/><path d="m9 12 2 2 4-4"/></svg>
+          仅本次浏览有效
+        </div>
+      </div>
+
+      <div class="document-scroller" id="documentScroller">
+        <div class="drop-hint" id="dropHint"><span>松开即可打开 PDF</span></div>
+        <article class="paper sample-paper selectable" id="samplePaper">
+          <div class="paper-kicker">Advances in Neural Information Processing Systems · 2017</div>
+          <h1>Attention Is All You Need</h1>
+          <div class="authors">Ashish Vaswani · Noam Shazeer · Niki Parmar · Jakob Uszkoreit</div>
+          <section class="abstract">
+            <h2>Abstract</h2>
+            <p>The dominant sequence transduction models are based on complex recurrent or convolutional neural networks that include an encoder and a decoder. The best performing models also connect the encoder and decoder through an attention mechanism.</p>
+            <p>We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train.</p>
+          </section>
+          <div class="columns">
+            <section>
+              <h2>1. Introduction</h2>
+              <p>Recurrent neural networks, long short-term memory and gated recurrent neural networks in particular, have been firmly established as state of the art approaches in sequence modeling and transduction problems such as language modeling and machine translation.</p>
+              <p>Recurrent models typically factor computation along the symbol positions of the input and output sequences. This inherently sequential nature precludes parallelization within training examples, which becomes critical at longer sequence lengths.</p>
+            </section>
+            <section>
+              <h2>2. Background</h2>
+              <p>The goal of reducing sequential computation also forms the foundation of the Extended Neural GPU, ByteNet and ConvS2S, all of which use convolutional neural networks as basic building blocks.</p>
+              <p>Attention mechanisms have become an integral part of compelling sequence modeling and transduction models, allowing modeling of dependencies without regard to their distance in the input or output sequences.</p>
+            </section>
+          </div>
+          <div class="equation">Attention(Q, K, V) = softmax(QKᵀ / √dₖ)V</div>
+          <div class="page-number">1</div>
+        </article>
+        <article class="paper sample-paper sample-continuation selectable">
+          <div class="paper-kicker">Attention Is All You Need · Architecture</div>
+          <h2>3. Model Architecture</h2>
+          <p>Most competitive neural sequence transduction models have an encoder-decoder structure. The encoder maps an input sequence of symbol representations to a sequence of continuous representations. Given those representations, the decoder then generates an output sequence one element at a time.</p>
+          <p>The Transformer follows this overall architecture using stacked self-attention and point-wise, fully connected layers for both the encoder and decoder. Each layer contains residual connections followed by normalization, helping information flow reliably through the network.</p>
+          <div class="figure-card">
+            <span>Encoder</span><b>Self-attention</b><i>Feed-forward network</i>
+            <span>Decoder</span><b>Masked attention</b><i>Linear + Softmax</i>
+          </div>
+          <div class="columns">
+            <section>
+              <h2>3.1 Encoder and Decoder</h2>
+              <p>The encoder is composed of a stack of identical layers. Each layer has two sub-layers: a multi-head self-attention mechanism and a simple position-wise fully connected network.</p>
+              <p>The decoder adds a third sub-layer, which performs attention over the output of the encoder stack. Masking prevents positions from attending to subsequent positions.</p>
+            </section>
+            <section>
+              <h2>3.2 Scaled Attention</h2>
+              <p>Attention maps a query and a set of key-value pairs to an output. The output is computed as a weighted sum of the values, with weights determined by compatibility between each query and key.</p>
+              <p>Scaling the dot products helps maintain stable gradients when the dimensionality of the keys becomes large.</p>
+            </section>
+          </div>
+          <div class="page-number">2</div>
+        </article>
+        <article class="paper sample-paper sample-continuation selectable">
+          <div class="paper-kicker">Attention Is All You Need · Evaluation</div>
+          <h2>5. Training and Results</h2>
+          <p>The model was evaluated on machine translation benchmarks. Batches were constructed so that examples with similar sequence lengths were grouped together, improving computational efficiency. Regularization and learning-rate scheduling were used to improve generalization.</p>
+          <div class="result-table" role="table" aria-label="Model comparison">
+            <div role="row"><b role="columnheader">Model</b><b role="columnheader">Quality</b><b role="columnheader">Training cost</b></div>
+            <div role="row"><span>Recurrent baseline</span><span>Strong</span><span>High</span></div>
+            <div role="row"><span>Convolutional model</span><span>Strong</span><span>Medium</span></div>
+            <div role="row"><span>Transformer</span><span>Superior</span><span>Low</span></div>
+          </div>
+          <div class="columns">
+            <section>
+              <h2>5.1 Machine Translation</h2>
+              <p>The Transformer achieved higher translation quality while requiring substantially less training time. Its parallel structure made better use of modern hardware than recurrent approaches.</p>
+            </section>
+            <section>
+              <h2>6. Conclusion</h2>
+              <p>Attention-only sequence models are faster to train and can capture long-range dependencies effectively. Future work can extend the approach to other modalities and more structured outputs.</p>
+            </section>
+          </div>
+          <div class="translation-prompt">Select any English sentence on this page to see its contextual Chinese translation.</div>
+          <div class="page-number">3</div>
+        </article>
+        <div id="pdfPages" class="pdf-pages selectable" hidden></div>
+        <button class="scroll-cue" id="scrollCue" aria-label="向下滚动继续阅读">
+          <span>向下滑动继续阅读</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 10 5 5 5-5"/></svg>
+        </button>
+      </div>
+    </section>
+
+    <aside class="translation-pane" id="translationPane" aria-label="翻译面板">
+      <div class="panel-heading">
+        <div>
+          <p class="eyebrow">阅读助手</p>
+          <h2>翻译与词典</h2>
+        </div>
+        <button class="icon-button mobile-close" id="closePanel" aria-label="关闭翻译面板">×</button>
+      </div>
+
+      <div class="empty-state" id="emptyState">
+        <div class="selection-glyph" aria-hidden="true"><span></span></div>
+        <h3>选中英文，立即理解</h3>
+        <p>单词显示词典释义，句子或段落显示中文翻译。</p>
+        <div class="try-it">试着选中左侧的 <button data-select-example="attention">attention</button></div>
+      </div>
+
+      <div class="result-state" id="resultState" hidden>
+        <div class="selection-card">
+          <span class="result-label" id="resultType">已选内容</span>
+          <p id="selectedText"></p>
+        </div>
+        <div id="wordResult" hidden>
+          <div class="word-title-row">
+            <div><h3 id="wordTitle">attention</h3><p id="phonetic">/əˈtenʃn/</p></div>
+            <button class="sound-button" id="speakBtn" aria-label="朗读单词" title="朗读">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Zm4 3.5a5 5 0 0 1 0 7M17.8 6a8.3 8.3 0 0 1 0 12"/></svg>
+            </button>
+          </div>
+          <div class="definition-block">
+            <span class="part-of-speech" id="partOfSpeech">noun</span>
+            <strong id="definition">注意；关注；注意力</strong>
+            <p id="contextMeaning">在本文语境中指模型对输入序列不同位置分配权重的机制。</p>
+          </div>
+          <div class="example-block"><span>英文释义 / 词形</span><p id="exampleSentence">The model relies entirely on an attention mechanism.</p></div>
+        </div>
+        <div id="passageResult" hidden>
+          <div class="translation-block">
+            <div class="block-heading"><span>中文翻译</span><span class="ai-tag">设备本地</span></div>
+            <p id="translatedText"></p>
+          </div>
+          <div class="translation-block soft">
+            <div class="block-heading"><span>阅读提示</span></div>
+            <p id="readingNote"></p>
+          </div>
+        </div>
+        <div class="result-actions">
+          <button id="copyBtn">复制结果</button>
+          <button id="clearBtn">清除</button>
+        </div>
+      </div>
+
+      <div class="panel-footer">
+        <span><i></i> PDF 不会保存</span>
+        <button id="aboutBtn">关于 PaperLingo</button>
+      </div>
+    </aside>
+  </main>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="aboutDialog">
+    <button class="dialog-close" id="dialogClose" aria-label="关闭">×</button>
+    <p class="eyebrow">PaperLingo</p>
+    <h2>专注阅读，随选随译</h2>
+    <p>PDF、词典查询和翻译都在当前设备完成，不会上传或保存，刷新页面后即消失。</p>
+    <p class="dialog-note">句段翻译由浏览器的设备端语言能力提供，首次使用时可能需要下载英中语言包；本地词典和 PDF 阅读始终可以独立使用。</p>
+  </dialog>
+
+  <script src="pdf.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
